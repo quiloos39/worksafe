@@ -4,7 +4,7 @@ import { BaseService, IPagination } from "./base";
 
 interface IList extends IPagination {}
 
-interface Announcement {
+export interface Announcement {
   title: string;
   description: string;
 }
@@ -22,11 +22,11 @@ export class AnnouncementService extends BaseService {
       },
     });
     const { data: announcementResponse } = await this.client.get(`/announcements?${query}`);
-    const announcement = {
-      id: announcementResponse.data.id,
-      title: announcementResponse.data.attributes.title,
-      description: announcementResponse.data.attributes.description,
-    };
+    const announcement = announcementResponse.data.map((announcement: any) => ({
+      id: announcement.id,
+      title: announcement.attributes.title,
+      description: announcement.attributes.description,
+    }));
     return announcement as Announcement;
   }
 }
