@@ -1,0 +1,17 @@
+{
+  "name": "worksafe-client",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "./dist/index.js",
+  "dependencies": {
+    "@types/node": "^18.16.3",
+    "@types/qs": "^6.9.7",
+    "axios": "^1.4.0",
+    "qs": "^6.11.1",
+    "typescript": "^5.0.4"
+  },
+  "scripts": {
+    "build": "tsc"
+  }
+}
