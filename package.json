@@ -1,5 +1,9 @@
 {
-  "name": "wsa",
+  "name": "worksafe",
+  "author": {
+    "name": "Necdet Efe",
+    "email": "hello@necdet.xyz"
+  },
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
@@ -13,6 +17,11 @@
     "prettier": "^2.8.8"
   },
   "scripts": {
-    "develop": "lerna run develop --stream"
+    "build": "lerna run build",
+    "build:worksafe-client": "lerna run build --scope worksafe-client",
+    "develop:web": "lerna run develop --scope web --stream --bail",
+    "develop:backend": "lerna run develop --scope backend --stream --bail",
+    "develop": "lerna run develop --stream --bail",
+    "storybook": "lerna run --scope web storybook --no-open"
   }
 }
