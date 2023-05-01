@@ -1,33 +1,31 @@
 import { ElementContainer } from "@/components/ElementContainer/ElementContainer";
-import { IncidentsTable } from "@/components/IncidentsTable/IncidentsTable";
+import { IncidentForm, IncidentInterface } from "@/components/IncidentForm/IncidentForm";
+import { IncidentTable } from "@/components/IncidentTable/IncidentTable";
 import { Layout } from "@/components/Layout/Layout";
-import { client, fetchIncidents, fetchUser } from "@/lib/client";
+import { client } from "@/lib/client";
 import {
-  Alert,
-  AlertDescription,
   Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Grid,
-  GridItem,
-  Input,
+  Flex,
+  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Select,
-  Textarea,
+  Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteCookie, getCookie } from "cookies-next";
-import { GetServerSideProps } from "next";
+import { getCookie } from "cookies-next";
+import { GetServerSideProps, NextPage } from "next";
+import qs from "qs";
 import { FormProvider, useForm } from "react-hook-form";
+import { Incident } from "worksafe-client/dist/services/incident";
+import { User } from "worksafe-client/dist/services/user";
+import { queryClient } from "../_app";
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps<IncidentPageProps, {}> = async ({ req, res }) => {
   const jwt = getCookie("jwt", { req, res }) as string;
 
   if (!jwt) {
@@ -39,184 +37,123 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
+  client.client.defaults.headers.common = {
+    Authorization: `Bearer ${jwt}`,
+  };
+
   try {
-    const user = await fetchUser(jwt);
-    const incidents = await fetchIncidents(jwt);
+    const user = await client.user.me();
+    const incidents = await client.incident.list({});
 
     return {
       props: {
         user,
-        incidents,
+        initialIncidents: incidents,
       },
     };
   } catch (e) {
-    deleteCookie("jwt");
     return {
-      redirect: {
-        permanent: false,
-        destination: "/auth",
-      },
+      notFound: true,
     };
   }
 };
 
-const useCreateIncidentForm = () => {
-  const modal = useDisclosure();
+type IncidentPageProps = {
+  initialIncidents: Incident[];
+  user: User;
+};
 
-  const userQuery = useQuery(
-    ["users"],
+const IncidentsPage: NextPage<IncidentPageProps> = ({ initialIncidents, user }) => {
+  const { onClose, isOpen, onOpen } = useDisclosure();
+
+  const { data: users } = useQuery(["users"], async () => {
+    const users = await client.user.list({});
+    return users;
+  });
+
+  const { data: incidents } = useQuery(
+    ["incidents"],
     async () => {
-      const jwt = getCookie("jwt") as string;
-      const { data: users } = await client.get("/users", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-      return users;
+      const incidents = await client.incident.list({});
+      return incidents;
     },
     {
-      initialData: [],
+      initialData: initialIncidents,
     }
   );
 
-  const mutateIncidentQuery = useMutation(["incidents"], async (incident: IncidentInterface) => {
-    const jwt = getCookie("jwt") as string;
-    await client.post(
-      "/incidents",
-      {
-        data: {
-          title: incident.title,
-          content: incident.content,
-          date: incident.date,
-          ...(incident.user && {
-            user: {
-              id: incident.user,
-            },
-          }),
+  const { isLoading, mutate: sendIncident } = useMutation(
+    ["incidents"],
+    async (incident: IncidentInterface) => {
+      const jwt = getCookie("jwt") as string;
+      const newIncidentQuery = qs.stringify(
+        {
+          populate: ["user"],
         },
+        {
+          encodeValuesOnly: true,
+        }
+      );
+
+      const { data: newIncidentResponse } = await client.post(
+        `/incidents?${newIncidentQuery}`,
+        {
+          data: {
+            title: incident.title,
+            content: incident.content,
+            date: incident.date,
+            ...(incident.user && {
+              user: {
+                id: incident.user,
+              },
+            }),
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+
+      const newIncident = transformIncidentResponse(newIncidentResponse.data);
+      return [...incidents, newIncident];
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.setQueriesData(["incidents"], data);
+        onClose();
       },
-      {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      }
-    );
-  });
+    }
+  );
 
-  const form = useForm<IncidentInterface>();
+  const form = useForm();
 
-  return {
-    modal,
-    userQuery,
-    mutateIncidentQuery,
-    form,
-  };
-};
-
-const IncidentsPage = ({ incidents, user }) => {
-  const { form, modal, userQuery, mutateIncidentQuery } = useCreateIncidentForm();
   return (
     <Layout user={user}>
-      <Modal isOpen={modal.isOpen} onClose={modal.onClose} size="4xl" isCentered={true}>
+      <Modal isOpen={isOpen} onClose={onClose} size="4xl" isCentered={true}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Incident</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormProvider {...form}>
-              <CreateIncidentForm userQuery={userQuery} mutateIncidentQuery={mutateIncidentQuery} />
+              <IncidentForm users={users} isSubmitting={isLoading} onSubmit={(data) => sendIncident(data)} />
             </FormProvider>
           </ModalBody>
         </ModalContent>
       </Modal>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Incidents</h1>
-        <Button colorScheme="purple" size="sm" px="8" onClick={modal.onOpen}>
+      <Flex mb={4}>
+        <Heading size="lg">Incidents</Heading>
+        <Spacer />
+        <Button colorScheme="purple" size="sm" px="8" onClick={onOpen}>
           Create
         </Button>
-      </div>
+      </Flex>
       <ElementContainer>
-        <IncidentsTable incidents={incidents}></IncidentsTable>
+        <IncidentTable incidents={incidents} />
       </ElementContainer>
     </Layout>
-  );
-};
-
-type IncidentInterface = {
-  title: string;
-  content: string;
-  user: string;
-  date: string;
-};
-
-const CreateIncidentForm = ({ userQuery, mutateIncidentQuery }) => {
-  const {
-    formState: { errors },
-    register,
-    handleSubmit,
-  } = useForm<IncidentInterface>();
-  const { data: users } = userQuery;
-  return (
-    <form onSubmit={handleSubmit((data) => mutateIncidentQuery.mutate(data))}>
-      {!!mutateIncidentQuery.error && (
-        <Alert status="error" mb={8}>
-          <AlertDescription>{mutateIncidentQuery.error?.message}</AlertDescription>
-        </Alert>
-      )}
-
-      <FormControl mb={4} isInvalid={!!errors.title}>
-        <FormLabel>Title</FormLabel>
-        <Input
-          {...register("title", {
-            required: "Title is required",
-          })}
-        />
-        <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-      </FormControl>
-
-      <FormControl mb={4} isInvalid={!!errors.content}>
-        <FormLabel>Content</FormLabel>
-        <Textarea
-          size="lg"
-          {...register("content", {
-            required: "Content is required",
-          })}
-        />
-        <FormErrorMessage>{errors.content?.message}</FormErrorMessage>
-      </FormControl>
-
-      <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-        <GridItem>
-          <FormControl mb={4}>
-            <FormLabel>User</FormLabel>
-            <Select placeholder="Select user" disabled={userQuery.isUsersLoading} {...register("user")}>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.firstName} {user.lastName}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-        </GridItem>
-
-        <GridItem>
-          <FormControl mb={4} isInvalid={!!errors.date}>
-            <FormLabel>Date</FormLabel>
-            <Input
-              type="date"
-              {...register("date", {
-                required: "Date is required",
-              })}
-            />
-            <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
-          </FormControl>
-        </GridItem>
-      </Grid>
-
-      <Button colorScheme="purple" isLoading={mutateIncidentQuery.isLoading} type="submit">
-        Submit
-      </Button>
-    </form>
   );
 };
 

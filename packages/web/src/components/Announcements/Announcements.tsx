@@ -1,21 +1,30 @@
-import { Button } from "@chakra-ui/react";
+import { Box, Button, Heading, SimpleGrid, Text } from "@chakra-ui/react";
+import type { Announcement as IAnnouncement } from "worksafe-client/dist/services/announcement";
 import { ElementContainer } from "../ElementContainer/ElementContainer";
 
-export const Announcement = ({ announcements }) => {
+type AnnouncementsProps = {
+  announcements: IAnnouncement[];
+};
+
+export const Announcement = ({ announcements }: AnnouncementsProps) => {
   return (
-    <div>
-      <h1 className="mb-4 text-2xl font-bold">Announcements</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <Box>
+      <Heading size="large" mb={4}>
+        Announcements
+      </Heading>
+      <SimpleGrid columns={3} gap={5}>
         {announcements.map((announcement) => (
           <ElementContainer key={announcement.id}>
-            <p className="text-lg font-bold mb-2">{announcement.title}</p>
-            <p className="mb-4 text-sm">{announcement.shortDescription}</p>
+            <Heading size="md" mb={2}>
+              {announcement.title}
+            </Heading>
+            <Text mb={4}>{announcement.description}</Text>
             <Button size="xs" className="mt-auto w-full max-w-[150px]">
               Read More
             </Button>
           </ElementContainer>
         ))}
-      </div>
-    </div>
+      </SimpleGrid>
+    </Box>
   );
 };

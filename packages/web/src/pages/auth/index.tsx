@@ -1,6 +1,6 @@
 import { IAuthFormInputs } from "@/components/AuthForm/AuthForm";
 import { client } from "@/lib/client";
-import { Alert } from "@chakra-ui/react";
+import { Alert, Box, Divider, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSideProps, NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -41,55 +41,51 @@ const Homepage: NextPage = () => {
     }
 
     try {
-      const { data: user } = await client.post("/auth/local", {
-        identifier: data.email,
-        password: data.password,
-      });
-
-      setCookie("jwt", user.jwt);
-
+      const user = await client.user.auth({ email: data.email, password: data.password });
+      setCookie("jwt", user.token);
       await router.push("/");
     } catch (e) {
       setError("networkError", {
         type: "manual",
         message: "Invalid email or password",
       });
-      return new Error("Invalid");
     }
   };
 
   const AuthForm = dynamic(() => import("@/components/AuthForm/AuthForm").then((e) => e.AuthForm), {
     ssr: false,
     loading: () => (
-      <div>
-        <div className="animate-pulse bg-gray-200 h-[30px] mb-4" />
-        <div className="animate-pulse bg-gray-200 h-[30px] mb-4" />
-        <div className="animate-pulse bg-gray-200 h-[30px] w-[200px]" />
-      </div>
+      <Box>
+        <Box className="animate-pulse bg-gray-200 h-[30px] mb-4" />
+        <Box className="animate-pulse bg-gray-200 h-[30px] mb-4" />
+        <Box className="animate-pulse bg-gray-200 h-[30px] w-[200px]" />
+      </Box>
     ),
   });
 
   return (
     <>
-      <div className="grid h-screen grid-cols-2">
-        <div className="flex flex-col items-center justify-center lg:col-span-1 col-span-2">
-          <div className="max-w-[500px] w-full">
-            <Image alt="" src="/logo.svg" width={200} height={100} className="mb-8 pointer-events-none" />
-            <h1 className="text-4xl font-bold mb-2">My Workspace</h1>
-            <p className="text-gray-400">Log into your workspace to check safety of employees.</p>
-            <hr className="my-5" />
-            {errors.networkError && (
-              <Alert status="error" className="mb-5">
-                {errors.networkError.message}
-              </Alert>
-            )}
-            <FormProvider {...form}>
-              <AuthForm onSubmit={onSubmit} />
-            </FormProvider>
-          </div>
-        </div>
-        <div className="bg-purple-800 lg:block hidden" />
-      </div>
+      <SimpleGrid columns={2} h="100vh">
+        <Box>
+          <Flex height="full" alignItems="center" justifyContent="center">
+            <Box>
+              <Image alt="" src="/logo.svg" width={200} height={100} style={{ marginBottom: "1rem", objectFit: "cover" }} />
+              <Heading size="lg">My Workspace</Heading>
+              <Text>Log into your workspace to check safety of employees.</Text>
+              <Divider />
+              {errors.networkError && (
+                <Alert status="error" className="mb-5">
+                  {errors.networkError.message}
+                </Alert>
+              )}
+              <FormProvider {...form}>
+                <AuthForm onSubmit={onSubmit} />
+              </FormProvider>
+            </Box>
+          </Flex>
+        </Box>
+        <Box backgroundColor="rgb(107 33 168)" />
+      </SimpleGrid>
     </>
   );
 };
