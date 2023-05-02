@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 config.autoAddCss = false;
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
