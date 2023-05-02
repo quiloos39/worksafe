@@ -19,7 +19,6 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getCookie } from "cookies-next";
 import { GetServerSideProps, NextPage } from "next";
-import qs from "qs";
 import { FormProvider, useForm } from "react-hook-form";
 import { Incident } from "worksafe-client/dist/services/incident";
 import { User } from "worksafe-client/dist/services/user";
@@ -74,6 +73,10 @@ const IncidentsPage: NextPage<IncidentPageProps> = ({ initialIncidents, user }) 
   const { data: incidents } = useQuery(
     ["incidents"],
     async () => {
+      const jwt = getCookie("jwt") as string;
+      client.client.defaults.headers.common = {
+        Authorization: `Bearer ${jwt}`,
+      };
       const incidents = await client.incident.list({});
       return incidents;
     },
@@ -86,37 +89,13 @@ const IncidentsPage: NextPage<IncidentPageProps> = ({ initialIncidents, user }) 
     ["incidents"],
     async (incident: IncidentInterface) => {
       const jwt = getCookie("jwt") as string;
-      const newIncidentQuery = qs.stringify(
-        {
-          populate: ["user"],
-        },
-        {
-          encodeValuesOnly: true,
-        }
-      );
 
-      const { data: newIncidentResponse } = await client.post(
-        `/incidents?${newIncidentQuery}`,
-        {
-          data: {
-            title: incident.title,
-            content: incident.content,
-            date: incident.date,
-            ...(incident.user && {
-              user: {
-                id: incident.user,
-              },
-            }),
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      );
-
-      const newIncident = transformIncidentResponse(newIncidentResponse.data);
+      const newIncident = await client.incident.create({
+        content: incident.content,
+        title: incident.title,
+        user: incident.user,
+        date: incident.date,
+      });
       return [...incidents, newIncident];
     },
     {
