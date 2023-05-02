@@ -41,6 +41,9 @@ const Homepage: NextPage = () => {
     }
 
     try {
+      client.client.defaults.headers.common = {
+        Authorization: ``,
+      };
       const user = await client.user.auth({ email: data.email, password: data.password });
       setCookie("jwt", user.token);
       await router.push("/");
