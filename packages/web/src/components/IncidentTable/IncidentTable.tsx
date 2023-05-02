@@ -1,12 +1,36 @@
-import { Button, Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Table, TableContainer, Tag, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import moment from "moment";
 import Link from "next/link";
-import { HTMLAttributes } from "react";
 
-export const IncidentsTable = ({ incidents }) => {
+type Incident = {
+  id: string;
+  title: string;
+  content: string;
+  status: IncidentStatus;
+  createdAt: string;
+  user?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+};
+
+type IncidentStatus = "In Progress" | "Open" | "Closed";
+
+type IncidentTableProps = {
+  incidents: Incident[];
+};
+
+const StatusColors = {
+  "In Progress": "yellow",
+  Open: "blue",
+  Closed: "red",
+};
+
+export const IncidentTable = ({ incidents }: IncidentTableProps) => {
   return (
-    <TableContainer className="w-full">
-      <Table variant="striped">
+    <TableContainer width="100%">
+      <Table size="sm" variant="striped" colorScheme="gray">
         <Thead>
           <Tr>
             <Th>Name</Th>
@@ -22,7 +46,9 @@ export const IncidentsTable = ({ incidents }) => {
               <Th>{incident.title}</Th>
               <Th>{!incident.user ? "None" : `${incident.user.firstName} ${incident.user.lastName}`}</Th>
               <Th>
-                <Status status={incident.status} />
+                <Tag size="sm" colorScheme={StatusColors[incident.status]}>
+                  {incident.status}
+                </Tag>
               </Th>
               <Th>{moment(incident.createdAt).format("YYYY-MM-DD HH:mm")}</Th>
               <Th>
@@ -36,13 +62,4 @@ export const IncidentsTable = ({ incidents }) => {
       </Table>
     </TableContainer>
   );
-};
-
-const Status = ({ status }: { status: "In Progress" | "Closed" | "Open" }) => {
-  const classes: Record<string, HTMLAttributes<HTMLSpanElement>["className"]> = {
-    "In Progress": "bg-yellow-700 p-2 text-xs rounded-lg text-white",
-    Closed: "bg-red-700 p-2 rounded-lg text-xs text-white",
-    Open: "bg-green-700 p-2 rounded-lg text-xs text-white",
-  };
-  return <span className={classes[status]}>{status}</span>;
 };
