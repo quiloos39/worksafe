@@ -16,9 +16,26 @@ export interface Incident {
   createdUser?: User;
 }
 
+interface INewIncident {
+  title: string;
+  date: string;
+  content: string;
+  user: string;
+}
+
 export class IncidentService extends BaseService {
   constructor(client: AxiosInstance) {
     super(client);
+  }
+
+  private transformUserResponse(userResponse: any) {
+    return {
+      id: userResponse.id,
+      email: userResponse.attributes.email,
+      firstName: userResponse.attributes.firstName,
+      lastName: userResponse.attributes.lastName,
+      avatar: userResponse.attributes.avatar?.data?.attributes?.url || null,
+    };
   }
 
   async list({ start = 0, limit = 25 }: IList) {
@@ -39,18 +56,10 @@ export class IncidentService extends BaseService {
       createdAt: incidentResponse.attributes.createdAt,
       content: incidentResponse.attributes.content,
       ...(incidentResponse.attributes?.attachedUser?.data && {
-        id: incidentResponse.attributes.attachedUser.data.id,
-        email: incidentResponse.attributes.attachedUser.data.attributes.email,
-        firstName: incidentResponse.attributes.attachedUser.data.attributes.firstName,
-        lastName: incidentResponse.attributes.attachedUser.data.attributes.lastName,
-        avatar: incidentResponse.attributes.attachedUser.data.attributes.avatar?.data?.attributes?.url || null,
+        user: this.transformUserResponse(incidentResponse.attributes.attachedUser.data),
       }),
       ...(incidentResponse.attributes?.createdUser?.data && {
-        id: incidentResponse.attributes.attachedUser.data.id,
-        email: incidentResponse.attributes.attachedUser.data.attributes.email,
-        firstName: incidentResponse.attributes.attachedUser.data.attributes.firstName,
-        lastName: incidentResponse.attributes.attachedUser.data.attributes.lastName,
-        avatar: incidentResponse.attributes.attachedUser.data.attributes.avatar?.data?.attributes?.url || null,
+        user: this.transformUserResponse(incidentResponse.attributes.createdUser.data),
       }),
     }));
     return incidents as Incident[];
@@ -61,45 +70,42 @@ export class IncidentService extends BaseService {
       populate: ["attachedUser", "attachedUser.avatar", "createdUser", "createdUser.avatar"],
     });
     const { data: incidentResponse } = await this.client.get(`/incidents/${id}?${query}`);
+    console.log(incidentResponse);
     const incident = {
       id: incidentResponse.data.id,
       title: incidentResponse.data.attributes.title,
       status: incidentResponse.data.attributes.status,
       date: incidentResponse.data.attributes.date,
-      createdAt: incidentResponse.attributes.createdAt,
+      createdAt: incidentResponse.data.attributes.createdAt,
       content: incidentResponse.data.attributes.content,
       ...(incidentResponse.data.attributes?.attachedUser?.data && {
-        id: incidentResponse.data.attributes.attachedUser.data.id,
-        email: incidentResponse.data.attributes.attachedUser.data.attributes.email,
-        firstName: incidentResponse.data.attributes.attachedUser.data.attributes.firstName,
-        lastName: incidentResponse.data.attributes.attachedUser.data.attributes.lastName,
-        avatar: incidentResponse.data.attributes.attachedUser.data.attributes.avatar?.data?.attributes?.url || null,
+        user: this.transformUserResponse(incidentResponse.data.attributes.attachedUser.data),
       }),
       ...(incidentResponse.data.attributes?.createdUser?.data && {
-        id: incidentResponse.data.attributes.attachedUser.data.id,
-        email: incidentResponse.data.attributes.attachedUser.data.attributes.email,
-        firstName: incidentResponse.data.attributes.attachedUser.data.attributes.firstName,
-        lastName: incidentResponse.data.attributes.attachedUser.data.attributes.lastName,
-        avatar: incidentResponse.data.attributes.attachedUser.data.attributes.avatar?.data?.attributes?.url || null,
+        user: this.transformUserResponse(incidentResponse.data.attributes.createdUser.data),
       }),
     };
     return incident as Incident;
   }
 
-  async create(incident: Incident) {
+  async create(incident: INewIncident) {
     const query = qs.stringify({
       populate: ["attachedUser", "attachedUser.avatar", "createdUser", "createdUser.avatar"],
     });
+
     const { data: incidentResponse } = await this.client.post(`/incidents?${query}`, {
       data: {
         attributes: {
           title: incident.title,
-          status: incident.status,
           date: incident.date,
           content: incident.content,
+          ...(incident.user && {
+            id: incident.user,
+          }),
         },
       },
     });
+
     const createdIncident = {
       id: incidentResponse.data.id,
       title: incidentResponse.data.attributes.title,
@@ -108,18 +114,10 @@ export class IncidentService extends BaseService {
       createdAt: incidentResponse.attributes.createdAt,
       content: incidentResponse.data.attributes.content,
       ...(incidentResponse.data.attributes?.attachedUser?.data && {
-        id: incidentResponse.data.attributes.attachedUser.data.id,
-        email: incidentResponse.data.attributes.attachedUser.data.attributes.email,
-        firstName: incidentResponse.data.attributes.attachedUser.data.attributes.firstName,
-        lastName: incidentResponse.data.attributes.attachedUser.data.attributes.lastName,
-        avatar: incidentResponse.data.attributes.attachedUser.data.attributes.avatar?.data?.attributes?.url || null,
+        user: this.transformUserResponse(incidentResponse.data.attributes.attachedUser.data),
       }),
       ...(incidentResponse.data.attributes?.createdUser?.data && {
-        id: incidentResponse.data.attributes.attachedUser.data.id,
-        email: incidentResponse.data.attributes.attachedUser.data.attributes.email,
-        firstName: incidentResponse.data.attributes.attachedUser.data.attributes.firstName,
-        lastName: incidentResponse.data.attributes.attachedUser.data.attributes.lastName,
-        avatar: incidentResponse.data.attributes.attachedUser.data.attributes.avatar?.data?.attributes?.url || null,
+        user: this.transformUserResponse(incidentResponse.data.attributes.createdUser.data),
       }),
     };
     return createdIncident as Incident;
