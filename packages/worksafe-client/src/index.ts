@@ -5,6 +5,7 @@ import { UserService } from "./services/user";
 
 type WorkSafeConstructor = {
   baseURL: string;
+  client?: AxiosInstance;
 };
 
 export class WorkSafe {
@@ -13,10 +14,12 @@ export class WorkSafe {
   announcement: AnnouncementService;
   user: UserService;
 
-  constructor({ baseURL }: WorkSafeConstructor) {
-    this.client = axios.create({
-      baseURL,
-    });
+  constructor({ baseURL, client }: WorkSafeConstructor) {
+    this.client =
+      client ||
+      axios.create({
+        baseURL,
+      });
     this.incident = new IncidentService(this.client);
     this.user = new UserService(this.client);
     this.announcement = new AnnouncementService(this.client);
