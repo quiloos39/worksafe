@@ -11,29 +11,38 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 export type IncidentInterface = {
   title: string;
   content: string;
   user: string;
   date: string;
+  network: string;
 };
 
-export const CreateIncidentForm = ({ userQuery, mutateIncidentQuery }) => {
+type IncidentFormProps = {
+  users?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  }[];
+  onSubmit?: SubmitHandler<IncidentInterface>;
+  isSubmitting?: boolean;
+};
+
+export const IncidentForm = ({ onSubmit, isSubmitting = false, users }: IncidentFormProps) => {
   const {
     formState: { errors },
     register,
     handleSubmit,
   } = useForm<IncidentInterface>();
 
-  const { data: users } = userQuery;
-
   return (
-    <form onSubmit={handleSubmit((data) => mutateIncidentQuery.mutate(data))}>
-      {!!mutateIncidentQuery.error && (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {!!errors.network && (
         <Alert status="error" mb={8}>
-          <AlertDescription>{mutateIncidentQuery.error?.message}</AlertDescription>
+          <AlertDescription>{errors.network.message}</AlertDescription>
         </Alert>
       )}
 
@@ -61,13 +70,14 @@ export const CreateIncidentForm = ({ userQuery, mutateIncidentQuery }) => {
       <Grid templateColumns="repeat(2, 1fr)" gap={4}>
         <GridItem>
           <FormControl mb={4}>
-            <FormLabel>User</FormLabel>
-            <Select placeholder="Select user" disabled={userQuery.isUsersLoading} {...register("user")}>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.firstName} {user.lastName}
-                </option>
-              ))}
+            <FormLabel>Attach User</FormLabel>
+            <Select placeholder={!users ? "Loading.." : "Select user"} disabled={!users} {...register("user")}>
+              {users &&
+                users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </option>
+                ))}
             </Select>
           </FormControl>
         </GridItem>
@@ -86,7 +96,7 @@ export const CreateIncidentForm = ({ userQuery, mutateIncidentQuery }) => {
         </GridItem>
       </Grid>
 
-      <Button colorScheme="purple" isLoading={mutateIncidentQuery.isLoading} type="submit">
+      <Button colorScheme="purple" isLoading={isSubmitting} type="submit">
         Submit
       </Button>
     </form>
