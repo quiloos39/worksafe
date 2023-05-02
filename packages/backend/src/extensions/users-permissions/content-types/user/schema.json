@@ -65,12 +65,6 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "incidents": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::incident.incident",
-      "mappedBy": "user"
-    },
     "firstName": {
       "type": "string"
     },
@@ -83,6 +77,12 @@
       ],
       "type": "media",
       "multiple": false
+    },
+    "incidents": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::incident.incident",
+      "mappedBy": "createdUser"
     }
   }
 }

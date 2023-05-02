@@ -21,7 +21,9 @@
         "Open",
         "Closed",
         "In Progress"
-      ]
+      ],
+      "default": "Open",
+      "required": true
     },
     "date": {
       "type": "datetime"
@@ -30,7 +32,13 @@
       "type": "richtext",
       "required": false
     },
-    "user": {
+    "attachedUser": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "incidents"
+    },
+    "createdUser": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
