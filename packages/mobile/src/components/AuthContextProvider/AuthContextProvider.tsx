@@ -1,4 +1,4 @@
-import * as SecureStore from "expo-secure-store";
+// import * as SecureStore from "expo-secure-store";
 import { createContext, useLayoutEffect, useState } from "react";
 import { client } from "../../lib/client";
 
@@ -14,7 +14,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
   useLayoutEffect(() => {
     async function fetchToken() {
-      const token = await SecureStore.getItemAsync("token");
+      // const token = await SecureStore.getItemAsync("token");
       if (token) {
         client.client.defaults.headers.common = {
           Authorization: `Bearer ${token}`,

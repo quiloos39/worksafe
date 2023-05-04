@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import * as SecureStore from "expo-secure-store";
+// import * as SecureStore from "expo-secure-store";
 import { Alert, Box, Button, Center, FormControl, Heading, Input, Text } from "native-base";
 import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -31,7 +31,7 @@ export const AuthScreen = () => {
         email: data.email,
         password: data.password,
       });
-      await SecureStore.setItemAsync("token", user.token);
+      // await SecureStore.setItemAsync("token", user.token);
       setToken(user.token);
     } catch (e) {
       if (e instanceof Error) {
