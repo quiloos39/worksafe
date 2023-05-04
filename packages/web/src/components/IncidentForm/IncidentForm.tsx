@@ -39,7 +39,7 @@ export const IncidentForm = ({ onSubmit, isSubmitting = false, users }: Incident
   } = useForm<IncidentInput>();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit!)}>
       {!!errors.network && (
         <Alert status="error" mb={8}>
           <AlertDescription>{errors.network.message}</AlertDescription>

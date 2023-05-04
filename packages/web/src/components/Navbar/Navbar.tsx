@@ -6,8 +6,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { User } from "worksafe-client/dist/services/user";
 
-export const Navbar = ({ user }) => {
+export const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
   const logout = () => {
     deleteCookie("jwt");
@@ -35,7 +36,7 @@ export const Navbar = ({ user }) => {
         </ul>
         <div className="flex items-center flex-col py-16">
           <div className="w-16 h-16 rounded-full mb-2 relative overflow-hidden">
-            <Image alt="" src={user.avatar} fill className="object-cover" />
+            {user.avatar ? <Image alt="" src={user.avatar} fill className="object-cover" /> : <div className="w-full h-full bg-black" />}
           </div>
           <p className="font-bold">
             {user.firstName} {user.lastName}

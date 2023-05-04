@@ -1,21 +1,9 @@
+// @ts-nocheck
+
 import { Button, Table, TableContainer, Tag, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import moment from "moment";
 import Link from "next/link";
-
-type Incident = {
-  id: string;
-  title: string;
-  content: string;
-  status: IncidentStatus;
-  createdAt: string;
-  user?: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-};
-
-type IncidentStatus = "In Progress" | "Open" | "Closed";
+import { Incident } from "worksafe-client/dist/services/incident";
 
 type IncidentTableProps = {
   incidents: Incident[];

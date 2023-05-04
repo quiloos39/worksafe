@@ -77,7 +77,7 @@ const IncidentPage: NextPage<IncidentPageProps> = ({ user, incident }) => {
         </Text>
         <Flex alignItems="center" gap={2}>
           <Box position="relative" width={10} height={10} overflow="hidden" rounded="full">
-            <Image alt="" src={user.avatar} fill className="object-cover" />
+            {user.avatar ? <Image alt="" src={user.avatar} fill className="object-cover" /> : <div className="bg-black w-full h-full" />}
           </Box>
           <Text>
             {user.firstName} {user.lastName}

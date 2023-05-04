@@ -30,6 +30,7 @@ export const Basic: Story = {
           createdAt: new Date().toString(),
           status: "Open",
           title: "Test",
+          date: new Date().toString(),
         },
       ]}
     />

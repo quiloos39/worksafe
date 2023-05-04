@@ -1,9 +1,10 @@
 import moment from "moment";
 import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Incident } from "worksafe-client/dist/services/incident";
 import { ElementContainer } from "../ElementContainer/ElementContainer";
 
-export const IncidentChart = ({ incidents }) => {
+export const IncidentChart = ({ incidents }: { incidents: Incident[] }) => {
   const chartData = useMemo(() => {
     const LAST_DAYS = 7;
     let dateArr = Array.from({ length: LAST_DAYS });
