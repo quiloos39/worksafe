@@ -1,19 +1,19 @@
-# Abstract
+## Abstract
 
 Generating a project idea that aligns with a company's culture and history can be challenging, particularly when there are numerous ideas to consider and limited time to decide. This project focuses on developing an incident tracking application that allows customers to easily track and monitor their incidents.
 
-# Features
+## Features
 
 | Name              | Description                                     | Implemented |
 | ----------------- | ----------------------------------------------- | ----------- |
 | Incident tracking | Customers can track and monitor their incidents | Yes         |
 | Safety checklist  | Customers can complete a safety checklist       | No          |
 
-# Some Notes
+## Some Notes
 
 This project utilizes Lerna, a modern and efficient build system designed to manage and publish multiple JavaScript/TypeScript packages from a single repository. The reason for utilizing Lerna is to create an abstraction layer over Strapi's REST API with TypeScript typings. By leveraging the capabilities of Lerna, this project can efficiently manage dependencies, optimize build times, and simplify the process of publishing and versioning packages. Additionally, this abstraction layer will provide a simplified interface for interacting with Strapi's REST API, making it easier to develop and maintain applications that use Strapi as a backend.
 
-# How to setup the project
+## How to setup the project
 
 1. Clone the repository to your local machine.
 2. Navigate to the root directory of the project and run yarn to install the necessary dependencies.
