@@ -1,5 +1,8 @@
+import Constants from "expo-constants";
 import { WorkSafe } from "worksafe-client";
 
+const apiUrl = Constants.expoConfig?.extra?.apiUrl;
+
 export const client = new WorkSafe({
-  baseURL: "http://192.168.1.109:1337/api",
+  baseURL: apiUrl,
 });

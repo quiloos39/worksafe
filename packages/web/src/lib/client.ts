@@ -1,5 +1,5 @@
 import { WorkSafe } from "worksafe-client";
 
 export const client = new WorkSafe({
-  baseURL: "http://localhost:1337/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
