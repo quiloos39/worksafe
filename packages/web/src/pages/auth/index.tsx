@@ -1,6 +1,6 @@
 import { IAuthFormInputs } from "@/components/AuthForm/AuthForm";
 import { client } from "@/lib/client";
-import { Alert, Box, Divider, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
+import { Alert, Box, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSideProps, NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -75,7 +75,6 @@ const Homepage: NextPage = () => {
               <Image alt="" src="/logo.svg" width={200} height={100} style={{ marginBottom: "1rem", objectFit: "cover" }} />
               <Heading size="lg">My Workspace</Heading>
               <Text>Log into your workspace to check safety of employees.</Text>
-              <Divider />
               {errors.networkError && (
                 <Alert status="error" className="mb-5">
                   {errors.networkError.message}
