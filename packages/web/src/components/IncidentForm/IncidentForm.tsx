@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-export type IncidentInterface = {
+export type IncidentInput = {
   title: string;
   content: string;
   user: string;
@@ -27,7 +27,7 @@ type IncidentFormProps = {
     firstName: string;
     lastName: string;
   }[];
-  onSubmit?: SubmitHandler<IncidentInterface>;
+  onSubmit?: SubmitHandler<IncidentInput>;
   isSubmitting?: boolean;
 };
 
@@ -36,7 +36,7 @@ export const IncidentForm = ({ onSubmit, isSubmitting = false, users }: Incident
     formState: { errors },
     register,
     handleSubmit,
-  } = useForm<IncidentInterface>();
+  } = useForm<IncidentInput>();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
