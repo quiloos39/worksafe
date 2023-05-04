@@ -2,9 +2,9 @@
 
 Generating a project idea that aligns with a company's culture and history can be challenging, particularly when there are numerous ideas to consider and limited time to decide. This project focuses on developing an incident tracking application that allows customers to easily track and monitor their incidents.
 
-You can access live demo of the project
-Web Version: [http://web.worksafe.necdet.xyz/](http://web.worksafe.necdet.xyz/) or [https://worksafe-web.vercel.app/](https://worksafe-web.vercel.app/)
-Mobile Version: [https://mobile.worksafe.necdet.xyz/](https://mobile.worksafe.necdet.xyz/)
+You can access live demo of the project \
+Web: [http://web.worksafe.necdet.xyz/](http://web.worksafe.necdet.xyz/) or [https://worksafe-web.vercel.app/](https://worksafe-web.vercel.app/) \
+Mobile: [https://mobile.worksafe.necdet.xyz/](https://mobile.worksafe.necdet.xyz/) \
 Strapi: [https://api.worksafe.necdet.xyz/admin](https://api.worksafe.necdet.xyz/admin)
 
 ## Features
