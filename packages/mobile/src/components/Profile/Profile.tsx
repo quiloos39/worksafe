@@ -1,6 +1,10 @@
 import { Avatar, Box, Center, Heading } from "native-base";
 import { User } from "worksafe-client/dist/services/user";
 
+import Constants from "expo-constants";
+
+const imageUrl = Constants.expoConfig?.extra?.imageUrl;
+
 export const Profile = ({ user, isLoading }: { user?: User; isLoading: boolean }) => {
   if (isLoading) {
     return (
@@ -17,7 +21,7 @@ export const Profile = ({ user, isLoading }: { user?: User; isLoading: boolean }
         height={100}
         mb={2}
         source={{
-          uri: `http://192.168.1.109:1337${user.avatar}`,
+          uri: `${imageUrl}${user.avatar}`,
         }}
       />
       <Heading size="lg">

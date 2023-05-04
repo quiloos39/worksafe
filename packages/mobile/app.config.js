@@ -29,6 +29,7 @@ module.exports = {
     },
     extra: {
       apiUrl: process.env.API_URL,
+      imageUrl: process.env.IMAGE_URL,
     },
   },
 };
