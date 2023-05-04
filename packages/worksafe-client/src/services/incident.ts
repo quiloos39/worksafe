@@ -20,7 +20,7 @@ interface INewIncident {
   title: string;
   date: string;
   content: string;
-  user: string;
+  userId?: string;
 }
 
 export class IncidentService extends BaseService {
@@ -70,7 +70,6 @@ export class IncidentService extends BaseService {
       populate: ["attachedUser", "attachedUser.avatar", "createdUser", "createdUser.avatar"],
     });
     const { data: incidentResponse } = await this.client.get(`/incidents/${id}?${query}`);
-    console.log(incidentResponse);
     const incident = {
       id: incidentResponse.data.id,
       title: incidentResponse.data.attributes.title,
@@ -95,14 +94,12 @@ export class IncidentService extends BaseService {
 
     const { data: incidentResponse } = await this.client.post(`/incidents?${query}`, {
       data: {
-        attributes: {
-          title: incident.title,
-          date: incident.date,
-          content: incident.content,
-          ...(incident.user && {
-            id: incident.user,
-          }),
-        },
+        title: incident.title,
+        date: incident.date,
+        content: incident.content,
+        ...(incident.userId && {
+          id: incident.userId,
+        }),
       },
     });
 
@@ -111,7 +108,7 @@ export class IncidentService extends BaseService {
       title: incidentResponse.data.attributes.title,
       status: incidentResponse.data.attributes.status,
       date: incidentResponse.data.attributes.date,
-      createdAt: incidentResponse.attributes.createdAt,
+      createdAt: incidentResponse.data.attributes.createdAt,
       content: incidentResponse.data.attributes.content,
       ...(incidentResponse.data.attributes?.attachedUser?.data && {
         user: this.transformUserResponse(incidentResponse.data.attributes.attachedUser.data),
