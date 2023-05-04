@@ -36,7 +36,7 @@ export const IncidentList = ({ incidents, isLoading }: { incidents?: Incident[];
           >
             <Box>
               <Heading size="md">{incident.title}</Heading>
-              <Text fontSize="sm">{moment().diff(moment(incident.date), "days")} days ago</Text>
+              <Text fontSize="sm">{moment().diff(moment(incident.date), "days") + 1} days ago</Text>
             </Box>
           </Pressable>
         ))}
