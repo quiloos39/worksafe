@@ -1,5 +1,5 @@
 import { ElementContainer } from "@/components/ElementContainer/ElementContainer";
-import { IncidentForm, IncidentInterface } from "@/components/IncidentForm/IncidentForm";
+import { IncidentForm, IncidentInput } from "@/components/IncidentForm/IncidentForm";
 import { IncidentTable } from "@/components/IncidentTable/IncidentTable";
 import { Layout } from "@/components/Layout/Layout";
 import { client } from "@/lib/client";
@@ -66,6 +66,10 @@ const IncidentsPage: NextPage<IncidentPageProps> = ({ initialIncidents, user }) 
   const { onClose, isOpen, onOpen } = useDisclosure();
 
   const { data: users } = useQuery(["users"], async () => {
+    const jwt = getCookie("jwt") as string;
+    client.client.defaults.headers.common = {
+      Authorization: `Bearer ${jwt}`,
+    };
     const users = await client.user.list({});
     return users;
   });
@@ -87,13 +91,15 @@ const IncidentsPage: NextPage<IncidentPageProps> = ({ initialIncidents, user }) 
 
   const { isLoading, mutate: sendIncident } = useMutation(
     ["incidents"],
-    async (incident: IncidentInterface) => {
+    async (incident: IncidentInput) => {
       const jwt = getCookie("jwt") as string;
-
+      client.client.defaults.headers.common = {
+        Authorization: `Bearer ${jwt}`,
+      };
       const newIncident = await client.incident.create({
         content: incident.content,
         title: incident.title,
-        user: incident.user,
+        userId: incident.user,
         date: incident.date,
       });
       return [...incidents, newIncident];
