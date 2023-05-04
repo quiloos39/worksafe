@@ -56,7 +56,7 @@ export class UserService extends BaseService {
     });
 
     const { data: usersResponse } = await this.client.get(`/users?${query}`);
-    const users = usersResponse.data.map((userResponse: any) => ({
+    const users = usersResponse.map((userResponse: any) => ({
       id: userResponse.id,
       email: userResponse.email,
       firstName: userResponse.firstName,
