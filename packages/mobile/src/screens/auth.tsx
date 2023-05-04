@@ -31,6 +31,7 @@ export const AuthScreen = () => {
         email: data.email,
         password: data.password,
       });
+      client.client.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
       // await SecureStore.setItemAsync("token", user.token);
       setToken(user.token);
     } catch (e) {
