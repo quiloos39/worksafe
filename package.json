@@ -8,12 +8,16 @@
   "private": true,
   "main": "index.js",
   "license": "MIT",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "devDependencies": {
     "eslint": "^8.39.0",
+    "husky": "^8.0.0",
     "lerna": "^6.6.1",
+    "lint-staged": "^13.2.2",
     "prettier": "^2.8.8"
   },
   "scripts": {
@@ -22,6 +26,9 @@
     "develop:web": "lerna run develop --scope web --stream --bail",
     "develop:backend": "lerna run develop --scope backend --stream --bail",
     "develop": "lerna run develop --stream --bail",
-    "storybook": "lerna run --scope web storybook --no-open"
+    "storybook": "lerna run --scope web storybook --no-open",
+    "test": "lerna run test --stream --bail",
+    "develop:mobile": "lerna run start --scope mobile",
+    "prepare": "husky install"
   }
 }
