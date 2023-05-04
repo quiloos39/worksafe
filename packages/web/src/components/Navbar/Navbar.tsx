@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import { faHome, faList, faPersonFallingBurst } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faPersonFallingBurst } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deleteCookie } from "cookies-next";
 import { motion } from "framer-motion";
@@ -31,12 +31,6 @@ export const Navbar = ({ user }) => {
               <FontAwesomeIcon icon={faPersonFallingBurst} className="mr-4 text-lg" />
               <span className="text-sm">Incidents</span>
             </Link>
-          </ListElement>
-          <ListElement>
-            <button className="flex items-center">
-              <FontAwesomeIcon icon={faList} className="mr-4 text-lg" />
-              <span className="text-sm">Safety Checklist</span>
-            </button>
           </ListElement>
         </ul>
         <div className="flex items-center flex-col py-16">
