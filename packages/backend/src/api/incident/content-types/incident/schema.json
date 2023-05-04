@@ -13,24 +13,22 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "status": {
       "type": "enumeration",
-      "enum": [
-        "Open",
-        "Closed",
-        "In Progress"
-      ],
+      "enum": ["Open", "Closed", "In Progress"],
       "default": "Open",
       "required": true
     },
     "date": {
-      "type": "datetime"
+      "type": "datetime",
+      "required": true
     },
     "content": {
       "type": "richtext",
-      "required": false
+      "required": true
     },
     "attachedUser": {
       "type": "relation",
