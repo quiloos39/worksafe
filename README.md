@@ -12,10 +12,11 @@ You can access live demo of the project
 
 ## Features
 
-| Name                 | Description                                     |
-| -------------------- | ----------------------------------------------- |
-| Incident tracking    | Customers can track and monitor their incidents |
-| ~~Safety checklist~~ | ~~Customers can complete a safety checklist~~   |
+| Name                 | Description                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| Incident tracking    | Customers can track and monitor their incidents             |
+| ~~Safety checklist~~ | ~~Customers can complete a safety checklist~~               |
+| ~~Dynamic homepage~~ | ~~Editors would be able to modify their pages dynamically~~ |
 
 ## How to setup the project
 
@@ -34,3 +35,5 @@ While I could have opted to develop this web app using React Native, I ultimatel
 For this project, I utilized the Native Base and Chakra UI frameworks as my design system. Although I am confident in my own design skills, I didn't feel like I had enough time to showcase them. Using an existing design system allowed me to focus on other aspects of the project.
 
 For this project, I selected Strapi over other frameworks such as NestJS or Express due to its scalability and built-in features such as authentication and authorization, a role-based system, and an admin panel. These capabilities allowed me to focus on developing the core features of the app
+
+I have experience building dynamic pages in the past, but I haven't had the opportunity to implement them recently due to time constraints.
