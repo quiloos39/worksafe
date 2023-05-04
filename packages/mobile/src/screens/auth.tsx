@@ -25,6 +25,7 @@ export const AuthScreen = () => {
   const { setToken } = useContext(AuthContext);
 
   async function onSubmit(data: IAuthForm) {
+    client.client.defaults.headers.common["Authorization"] = "";
     try {
       const user = await client.user.auth({
         email: data.email,

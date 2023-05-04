@@ -78,10 +78,10 @@ export class IncidentService extends BaseService {
       createdAt: incidentResponse.data.attributes.createdAt,
       content: incidentResponse.data.attributes.content,
       ...(incidentResponse.data.attributes?.attachedUser?.data && {
-        user: this.transformUserResponse(incidentResponse.data.attributes.attachedUser.data),
+        attachedUser: this.transformUserResponse(incidentResponse.data.attributes.attachedUser.data),
       }),
       ...(incidentResponse.data.attributes?.createdUser?.data && {
-        user: this.transformUserResponse(incidentResponse.data.attributes.createdUser.data),
+        createdUser: this.transformUserResponse(incidentResponse.data.attributes.createdUser.data),
       }),
     };
     return incident as Incident;
