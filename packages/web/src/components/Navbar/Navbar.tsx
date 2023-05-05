@@ -15,7 +15,7 @@ export const Navbar = ({ user }: { user: User }) => {
     router.push("/auth");
   };
   return (
-    <div className="relative bg-white text-black w-[240px] flex-shrink-0 h-full">
+    <div className="relative bg-white text-black lg:w-[240px] w-full flex-shrink-0 h-full">
       <div className="flex flex-col items-center h-full">
         <div className="p-4">
           <Image alt="" src="/logo.svg" width={150} height={100} />

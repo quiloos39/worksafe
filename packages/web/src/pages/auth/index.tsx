@@ -1,6 +1,6 @@
 import { IAuthFormInputs } from "@/components/AuthForm/AuthForm";
 import { client } from "@/lib/client";
-import { Alert, Box, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
+import { Alert, Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSideProps, NextPage } from "next";
 import dynamic from "next/dynamic";
@@ -68,7 +68,7 @@ const Homepage: NextPage = () => {
 
   return (
     <>
-      <SimpleGrid columns={2} h="100vh">
+      <div className="h-screen grid lg:grid-cols-2">
         <Box>
           <Flex height="full" alignItems="center" justifyContent="center">
             <Box>
@@ -86,8 +86,8 @@ const Homepage: NextPage = () => {
             </Box>
           </Flex>
         </Box>
-        <Box backgroundColor="rgb(107 33 168)" />
-      </SimpleGrid>
+        <div className="bg-purple-600 lg:block hidden" />
+      </div>
     </>
   );
 };
