@@ -67,7 +67,7 @@ describe("Incident Service Test", () => {
           const id = path.match(/\/incidents\/(\d+)/)[1];
           return {
             data: {
-              data: INCIDENTS[id],
+              data: INCIDENTS.find((incident) => incident.id === id),
             },
           };
         }
